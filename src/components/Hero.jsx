@@ -104,7 +104,7 @@ const Hero = () => {
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.5 }}
                     >
-                        SIH-Inspired Internal Hackathon
+                        Ideate, Innovate, Implement
                     </motion.p>
 
                     <motion.div
