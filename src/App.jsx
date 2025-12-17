@@ -1,11 +1,14 @@
 import React from 'react';
 import Hero from './components/Hero';
 import Timeline from './components/Timeline';
+import LiveStream from './components/LiveStream';
 import Rounds from './components/Rounds';
 import Prizes from './components/Prizes';
 import Mentoring from './components/Mentoring';
 import Footer from './components/Footer';
 import Navbar from './components/Navbar';
+import RegisterToast from './components/RegisterToast';
+import WhatsAppFloat from './components/WhatsAppFloat';
 import { GlobalSpotlight } from './components/MagicEffects';
 import { useIsMobile } from './hooks/useIsMobile';
 
@@ -17,6 +20,12 @@ function App() {
       {/* Navbar */}
       <Navbar />
 
+      {/* Register Toast Notification */}
+      <RegisterToast />
+
+      {/* WhatsApp Float Button */}
+      <WhatsAppFloat />
+
       {/* Disable GlobalSpotlight on mobile for performance */}
       <GlobalSpotlight
         enabled={!isMobile}
@@ -26,6 +35,7 @@ function App() {
       />
       <Hero />
       <Timeline />
+      <LiveStream />
       <Rounds />
       <Mentoring />
       <Prizes />
