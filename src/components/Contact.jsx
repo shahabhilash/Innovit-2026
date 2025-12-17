@@ -64,23 +64,19 @@ const Contact = () => {
   const faqs = [
     {
       question: "When is the hackathon happening?",
-      answer: "Innovit 2026 is scheduled for October 15-17, 2026. It will be a 36-hour continuous innovation marathon."
+      answer: "It starts from December 26th, 2025 and would continue in multiple (refer the timeline) and the Grand Finale is on February 19th, 2026."
     },
     {
       question: "Who can participate?",
-      answer: "We welcome students, professionals, and innovators from all backgrounds. Teams can consist of 2-4 members. No prior coding experience is strictly required, but it helps!"
+      answer: "Anyone with the required interest and will to participate can do it."
     },
     {
       question: "Is there a registration fee?",
-      answer: "No, participation in Innovit 2026 is completely free! We believe in accessing opportunity for everyone."
-    },
-    {
-      question: "Will food and accommodation be provided?",
-      answer: "Yes, we provide all meals, snacks, and drinks throughout the event. There will be designated resting areas for participants."
+      answer: "To be announced."
     },
     {
       question: "What are the prizes?",
-      answer: "We have a total prize pool of $50,000 distributed across multiple tracks, plus internship opportunities with our sponsors."
+      answer: "To be announced."
     }
   ];
 
