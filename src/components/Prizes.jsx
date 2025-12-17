@@ -9,7 +9,7 @@ const Prizes = () => {
         {
             icon: <Trophy className="w-8 h-8" />,
             title: "Cash Prizes",
-            color: "from-yellow-500 to-orange-500",
+            color: "from-yellow-500 to-amber-500",
             items: [
                 "Cash prizes for top-performing teams",
                 "Top winning teams from all themes awarded during Grand Finale",
@@ -19,7 +19,7 @@ const Prizes = () => {
         {
             icon: <Award className="w-8 h-8" />,
             title: "Certificates",
-            color: "from-purple-500 to-pink-500",
+            color: "from-purple-700 to-purple-900",
             items: [
                 "Phase-wise certificates for all participants",
                 "Finalist certificates for Top 15 teams",
@@ -29,7 +29,7 @@ const Prizes = () => {
         {
             icon: <Code className="w-8 h-8" />,
             title: "Learning & Career Benefits",
-            color: "from-blue-500 to-cyan-500",
+            color: "from-amber-400 to-yellow-500",
             items: [
                 "Guidance to claim GitHub Student Developer Pack",
                 "Access to premium developer tools and resources",
@@ -40,7 +40,7 @@ const Prizes = () => {
         {
             icon: <Star className="w-8 h-8" />,
             title: "Additional Benefits",
-            color: "from-green-500 to-emerald-500",
+            color: "from-yellow-400 to-amber-600",
             items: [
                 "Exposure to SIH-style evaluation & presentation",
                 "Recognition under ADVITIYA – Annual Tech Fest, VIT Bhopal",
@@ -55,7 +55,7 @@ const Prizes = () => {
             {/* Background Elements */}
             <div className="absolute inset-0 opacity-5">
                 <div className="absolute top-20 left-10 w-72 h-72 bg-yellow-500 rounded-full blur-3xl"></div>
-                <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-20 right-10 w-96 h-96 bg-amber-500 rounded-full blur-3xl"></div>
             </div>
 
             <div className="container relative z-10">
@@ -75,13 +75,13 @@ const Prizes = () => {
                         transition={{ delay: 0.2 }}
                     >
                         <Trophy className="w-5 h-5 text-yellow-400" />
-                        <span className="text-sm font-semibold">Rewards & Recognition</span>
+                        <span className="text-sm font-semibold text-[#fff1ce]">Rewards & Recognition</span>
                     </motion.div>
 
                     <h2 className="text-4xl md:text-5xl font-bold mb-4">
                         <span className="gradient-text">Prizes & Benefits</span>
                     </h2>
-                    <p className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto">
+                    <p className="text-base md:text-lg text-[#fbe9bb] max-w-2xl mx-auto">
                         Compete for exciting rewards, gain valuable learning experiences, and get recognized for your innovation
                     </p>
                 </motion.div>
@@ -97,7 +97,7 @@ const Prizes = () => {
                             transition={{ duration: 0.6, delay: index * 0.1 }}
                         >
                             <ElectricBorder
-                                color={index === 0 ? '#eab308' : index === 1 ? '#a855f7' : index === 2 ? '#06b6d4' : '#10b981'}
+                                color={index === 0 ? '#f5bc22' : index === 1 ? '#2e0d8b' : index === 2 ? '#ffd700' : '#f5bc22'}
                                 speed={1.2}
                                 chaos={0.6}
                                 thickness={2}
@@ -106,7 +106,7 @@ const Prizes = () => {
                                 <ParticleCard
                                     className="magic-card"
                                     particleCount={8}
-                                    glowColor={index === 0 ? '234, 179, 8' : index === 1 ? '168, 85, 247' : index === 2 ? '6, 182, 212' : '16, 185, 129'}
+                                    glowColor={index === 0 ? '245, 188, 34' : index === 1 ? '46, 13, 139' : index === 2 ? '255, 215, 0' : '245, 188, 34'}
                                     enableTilt={true}
                                     enableMagnetism={true}
                                     clickEffect={true}
@@ -122,13 +122,13 @@ const Prizes = () => {
                                         </div>
 
                                         {/* Title */}
-                                        <h3 className="text-xl md:text-2xl font-bold mb-4">{category.title}</h3>
+                                        <h3 className="text-xl md:text-2xl font-bold mb-4 text-[#fff1ce]">{category.title}</h3>
 
                                         {/* Items List */}
                                         <ul className="space-y-3">
                                             {category.items.map((item, i) => (
-                                                <li key={i} className="flex items-start gap-3 text-sm md:text-base text-gray-400">
-                                                    <Sparkles className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                                                <li key={i} className="flex items-start gap-3 text-sm md:text-base text-[#fbe9bb]">
+                                                    <Sparkles className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
                                                     <span>{item}</span>
                                                 </li>
                                             ))}
@@ -151,9 +151,9 @@ const Prizes = () => {
                     <div className="glass p-6 rounded-2xl max-w-3xl mx-auto">
                         <div className="flex items-center justify-center gap-2 mb-3">
                             <Gift className="w-6 h-6 text-yellow-400" />
-                            <h4 className="text-lg md:text-xl font-bold">More Surprises Await!</h4>
+                            <h4 className="text-lg md:text-xl font-bold text-[#fff1ce]">More Surprises Await!</h4>
                         </div>
-                        <p className="text-sm md:text-base text-gray-400">
+                        <p className="text-sm md:text-base text-[#fbe9bb]">
                             Additional prizes, goodies, and special recognitions will be announced in later stages.
                             Stay tuned for more exciting updates!
                         </p>

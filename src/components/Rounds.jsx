@@ -13,8 +13,8 @@ const Rounds = () => {
             title: 'Idea Submission',
             subtitle: 'Phase 1',
             icon: <Lightbulb className="w-8 h-8" />,
-            color: 'purple',
-            gradient: 'from-purple-500 to-purple-700',
+            color: 'gold',
+            gradient: 'from-yellow-500 to-amber-600',
             description: 'Transform your vision into a compelling proposal',
             whatToDo: [
                 'Choose one problem statement from the released themes',
@@ -110,7 +110,7 @@ const Rounds = () => {
     };
 
     return (
-        <section id="rounds" className="section-padding relative overflow-hidden bg-gradient-to-b from-transparent via-purple-900/5 to-transparent">
+        <section id="rounds" className="section-padding relative overflow-hidden bg-gradient-to-b from-transparent via-yellow-900/5 to-transparent">
             <div className="container relative z-10">
                 {/* Section Header */}
                 <motion.div
@@ -123,7 +123,7 @@ const Rounds = () => {
                     <h2 className="text-4xl md:text-5xl font-bold mb-4">
                         <span className="gradient-text">Competition Rounds</span>
                     </h2>
-                    <p className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto">
+                    <p className="text-base md:text-lg text-[#fbe9bb] max-w-2xl mx-auto">
                         Three challenging phases to test your innovation, implementation, and presentation skills
                     </p>
                 </motion.div>
@@ -169,11 +169,11 @@ const Rounds = () => {
 
                                     {/* Title */}
                                     <h3 className="text-xl md:text-2xl font-bold mb-2">{round.title}</h3>
-                                    <p className="text-xs md:text-sm text-purple-400 mb-3">{round.subtitle}</p>
-                                    <p className="text-sm md:text-base text-gray-400 mb-4">{round.description}</p>
+                                    <p className="text-xs md:text-sm text-yellow-400 mb-3">{round.subtitle}</p>
+                                    <p className="text-sm md:text-base text-[#fbe9bb] mb-4">{round.description}</p>
 
                                     {/* Expand Button */}
-                                    <button className="flex items-center gap-2 text-sm font-semibold text-purple-400 hover:text-purple-300 transition-colors">
+                                    <button className="flex items-center gap-2 text-sm font-semibold text-yellow-400 hover:text-yellow-300 transition-colors">
                                         {expandedRound === round.id ? (
                                             <>
                                                 <span>Show Less</span>
@@ -208,8 +208,8 @@ const Rounds = () => {
                                                 </h4>
                                                 <ul className="space-y-2">
                                                     {round.whatToDo.map((item, i) => (
-                                                        <li key={i} className="text-sm text-gray-400 flex items-start gap-2">
-                                                            <span className="text-purple-400 mt-1">•</span>
+                                                        <li key={i} className="text-sm text-[#fbe9bb] flex items-start gap-2">
+                                                            <span className="text-yellow-400 mt-1">•</span>
                                                             <span>{item}</span>
                                                         </li>
                                                     ))}
@@ -224,7 +224,7 @@ const Rounds = () => {
                                                 </h4>
                                                 <ul className="space-y-2">
                                                     {round.submissions.map((item, i) => (
-                                                        <li key={i} className="text-sm text-gray-400 flex items-start gap-2">
+                                                        <li key={i} className="text-sm text-[#fbe9bb] flex items-start gap-2">
                                                             <span className="text-blue-400">
                                                                 {iconMap[item] || <FileText className="w-5 h-5" />}
                                                             </span>
@@ -242,7 +242,7 @@ const Rounds = () => {
                                                 </h4>
                                                 <ul className="space-y-2">
                                                     {round.evaluation.map((item, i) => (
-                                                        <li key={i} className="text-sm text-gray-400 flex items-start gap-2">
+                                                        <li key={i} className="text-sm text-[#fbe9bb] flex items-start gap-2">
                                                             <span className="text-cyan-400">✓</span>
                                                             <span>{item}</span>
                                                         </li>
@@ -254,7 +254,7 @@ const Rounds = () => {
                                             <div className={`p-4 rounded-xl bg-gradient-to-r ${round.gradient} bg-opacity-10 border border-opacity-20`}
                                                 style={{ borderColor: `var(--accent-${round.color})` }}>
                                                 <p className="text-sm font-semibold">
-                                                    <span className="text-gray-400">Outcome:</span> {round.outcome}
+                                                    <span className="text-[#fbe9bb]">Outcome:</span> {round.outcome}
                                                 </p>
                                             </div>
                                         </div>
@@ -270,3 +270,4 @@ const Rounds = () => {
 };
 
 export default Rounds;
+

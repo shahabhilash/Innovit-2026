@@ -11,115 +11,115 @@ const Timeline = () => {
             title: 'Hackathon Launch',
             description: 'Official launch of INNOVIT 2026',
             icon: <Trophy className="w-6 h-6" />,
-            color: 'purple'
+            color: 'gold'
         },
         {
             date: '26 Dec 2025',
             title: 'Problem Statements Released',
             description: 'All challenge themes and problem statements available',
             icon: <FileText className="w-6 h-6" />,
-            color: 'blue'
+            color: 'cream'
         },
         {
             date: '26 Dec 2025',
             title: 'Orientation Session',
             description: 'Kickoff session + SIH finalist mentoring',
             icon: <Users className="w-6 h-6" />,
-            color: 'cyan'
+            color: 'light'
         },
         {
             date: '26 Dec 2025',
             title: 'Registration Opens',
             description: 'Team registration & Phase 1 idea submission begins',
             icon: <CheckCircle className="w-6 h-6" />,
-            color: 'purple'
+            color: 'gold'
         },
         {
             date: '13 Jan 2026',
             title: 'Phase 1 Deadline',
             description: 'Registration & idea submission closes',
             icon: <Lightbulb className="w-6 h-6" />,
-            color: 'pink'
+            color: 'purple'
         },
         {
             date: '16 Jan 2026',
             title: 'Phase 1 Results',
             description: 'Shortlisted teams announced',
             icon: <CheckCircle className="w-6 h-6" />,
-            color: 'blue'
+            color: 'cream'
         },
         {
             date: '17 Jan 2026',
             title: 'Phase 2 Opens',
             description: 'Prototype submission forms released',
             icon: <Code className="w-6 h-6" />,
-            color: 'cyan'
+            color: 'light'
         },
         {
             date: '7 Feb 2026',
             title: 'Phase 2 Deadline',
             description: 'Prototype & code submission closes',
             icon: <Code className="w-6 h-6" />,
-            color: 'purple'
+            color: 'gold'
         },
         {
             date: '9 Feb 2026',
             title: 'Phase 2 Results',
             description: 'Evaluation results announced',
             icon: <CheckCircle className="w-6 h-6" />,
-            color: 'blue'
+            color: 'cream'
         },
         {
             date: '10 Feb 2026',
             title: 'Finalists Announced',
             description: 'Top teams selected for grand finale',
             icon: <Trophy className="w-6 h-6" />,
-            color: 'pink'
+            color: 'purple'
         },
         {
             date: '11-17 Feb 2026',
             title: 'Mentoring Week',
             description: 'Intensive mentoring by experts & SIH finalists',
             icon: <Users className="w-6 h-6" />,
-            color: 'cyan'
+            color: 'light'
         },
         {
             date: '19 Feb 2026',
             title: 'Grand Finale',
             description: 'Offline finale event at VIT Bhopal',
             icon: <Trophy className="w-6 h-6" />,
-            color: 'purple',
+            color: 'gold',
             highlight: true
         }
     ];
 
     const colorClasses = {
-        purple: 'from-purple-500 to-purple-700',
-        blue: 'from-blue-500 to-blue-700',
-        cyan: 'from-cyan-500 to-cyan-700',
-        pink: 'from-pink-500 to-pink-700'
+        gold: 'from-yellow-500 to-yellow-600',
+        cream: 'from-amber-200 to-yellow-300',
+        purple: 'from-purple-700 to-purple-900',
+        light: 'from-yellow-300 to-amber-400'
     };
 
     const colorHex = {
-        purple: '#8b5cf6',
-        blue: '#3b82f6',
-        cyan: '#06b6d4',
-        pink: '#ec4899'
+        gold: '#f5bc22',
+        cream: '#fff1ce',
+        purple: '#2e0d8b',
+        light: '#ffd700'
     };
 
     const glowClasses = {
+        gold: 'glow-gold',
+        cream: 'glow-cream',
         purple: 'glow-purple',
-        blue: 'glow-blue',
-        cyan: 'glow-cyan',
-        pink: 'shadow-pink-500/50'
+        light: 'glow-gold'
     };
 
     return (
         <section id="timeline" className="section-padding relative overflow-hidden">
             {/* Background Elements */}
             <div className="absolute inset-0 opacity-5">
-                <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500 rounded-full blur-3xl"></div>
-                <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-500 rounded-full blur-3xl"></div>
+                <div className="absolute top-20 left-10 w-72 h-72 bg-yellow-500 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-20 right-10 w-96 h-96 bg-amber-400 rounded-full blur-3xl"></div>
             </div>
 
             <div className="container relative z-10">
@@ -134,7 +134,7 @@ const Timeline = () => {
                     <h2 className="text-4xl md:text-5xl font-bold mb-4">
                         <span className="gradient-text">Event Timeline</span>
                     </h2>
-                    <p className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto px-4">
+                    <p className="text-base md:text-lg text-[#fbe9bb] max-w-2xl mx-auto px-4">
                         Your journey from idea to innovation - every milestone mapped out
                     </p>
                 </motion.div>
@@ -189,8 +189,8 @@ const Timeline = () => {
                                                     {event.date}
                                                 </div>
 
-                                                <h3 className="text-lg md:text-xl font-bold mb-2">{event.title}</h3>
-                                                <p className="text-sm md:text-base text-gray-400">{event.description}</p>
+                                                <h3 className="text-lg md:text-xl font-bold mb-2 text-[#fff1ce]">{event.title}</h3>
+                                                <p className="text-sm md:text-base text-[#fbe9bb]">{event.description}</p>
                                             </motion.div>
                                         </ParticleCard>
                                     </ElectricBorder>

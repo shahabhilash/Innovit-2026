@@ -30,12 +30,12 @@ const Footer = () => {
                         <h3 className="text-3xl font-bold mb-4">
                             <span className="gradient-text">INNOVIT 2026</span>
                         </h3>
-                        <p className="text-gray-400 mb-4">
+                        <p className="text-[#fbe9bb] mb-4">
                             SIH-Inspired Internal Hackathon organized by the Blockchain Club at VIT Bhopal University.
                         </p>
-                        <div className="space-y-2 text-sm text-gray-400">
+                        <div className="space-y-2 text-sm text-[#fbe9bb]">
                             <div className="flex items-center gap-2">
-                                <MapPin className="w-4 h-4 text-purple-400" />
+                                <MapPin className="w-4 h-4 text-yellow-400" />
                                 <span>VIT Bhopal University</span>
                             </div>
                             <div className="flex items-center gap-2">
@@ -58,7 +58,7 @@ const Footer = () => {
                                 <li key={index}>
                                     <a
                                         href={link.href}
-                                        className="text-gray-400 hover:text-purple-400 transition-colors"
+                                        className="text-[#fbe9bb] hover:text-yellow-400 transition-colors"
                                     >
                                         {link.label}
                                     </a>
@@ -77,15 +77,15 @@ const Footer = () => {
                         <h4 className="text-xl font-bold mb-4">Event Details</h4>
                         <div className="space-y-3">
                             <div className="glass p-3 rounded-lg">
-                                <p className="text-sm text-gray-400">Mode</p>
+                                <p className="text-sm text-[#fbe9bb]">Mode</p>
                                 <p className="font-semibold">Hybrid (Online + Offline)</p>
                             </div>
                             <div className="glass p-3 rounded-lg">
-                                <p className="text-sm text-gray-400">Participation</p>
+                                <p className="text-sm text-[#fbe9bb]">Participation</p>
                                 <p className="font-semibold">VIT Bhopal Students</p>
                             </div>
                             <div className="glass p-3 rounded-lg">
-                                <p className="text-sm text-gray-400">Focus</p>
+                                <p className="text-sm text-[#fbe9bb]">Focus</p>
                                 <p className="font-semibold">Blockchain Technology</p>
                             </div>
                         </div>
@@ -116,7 +116,7 @@ const Footer = () => {
 
                 {/* Bottom Bar */}
                 <div className="border-t border-white/10 pt-8 text-center">
-                    <p className="text-gray-400 text-sm">
+                    <p className="text-[#fbe9bb] text-sm">
                         © 2026 Blockchain Club, VIT Bhopal University. All rights reserved.
                     </p>
                     <p className="text-gray-500 text-xs mt-2">
@@ -126,9 +126,10 @@ const Footer = () => {
             </div>
 
             {/* Decorative Elements */}
-            <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-blue-500 to-cyan-500"></div>
+            <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600"></div>
         </footer>
     );
 };
 
 export default Footer;
+

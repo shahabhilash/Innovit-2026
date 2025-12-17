@@ -9,7 +9,7 @@ const Mentoring = () => {
             icon: <Target className="w-6 h-6" />,
             title: 'Technical Feedback',
             description: 'Get expert insights on your architecture, code quality, and blockchain implementation',
-            color: 'purple'
+            color: 'gold'
         },
         {
             icon: <Zap className="w-6 h-6" />,
@@ -32,7 +32,7 @@ const Mentoring = () => {
     ];
 
     const colorClasses = {
-        purple: 'from-purple-500 to-purple-700',
+        gold: 'from-yellow-500 to-amber-600',
         blue: 'from-blue-500 to-blue-700',
         cyan: 'from-cyan-500 to-cyan-700',
         pink: 'from-pink-500 to-pink-700'
@@ -42,7 +42,7 @@ const Mentoring = () => {
         <section id="mentoring" className="section-padding relative overflow-hidden">
             {/* Background Glow */}
             <div className="absolute inset-0 opacity-10">
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-500 rounded-full blur-3xl"></div>
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-yellow-500 rounded-full blur-3xl"></div>
             </div>
 
             <div className="container relative z-10">
@@ -57,10 +57,10 @@ const Mentoring = () => {
                     <h2 className="text-5xl md:text-6xl font-bold mb-6">
                         <span className="gradient-text">Mentoring Phase</span>
                     </h2>
-                    <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-4">
+                    <p className="text-xl text-[#fbe9bb] max-w-3xl mx-auto mb-4">
                         Between Round 2 & Round 3: Intensive guidance to refine your solution
                     </p>
-                    <div className="inline-block px-6 py-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold">
+                    <div className="inline-block px-6 py-2 rounded-full bg-gradient-to-r from-yellow-500 to-amber-500 text-white font-semibold">
                         11 - 17 February 2026
                     </div>
                 </motion.div>
@@ -76,7 +76,7 @@ const Mentoring = () => {
                         transition={{ duration: 0.6 }}
                     >
                         <div className="flex justify-center mb-6">
-                            <div className="p-4 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500">
+                            <div className="p-4 rounded-2xl bg-gradient-to-br from-yellow-500 to-amber-500">
                                 <Users className="w-12 h-12" />
                             </div>
                         </div>
@@ -88,7 +88,7 @@ const Mentoring = () => {
                         </p>
                         <div className="flex flex-wrap justify-center gap-4 text-sm">
                             <div className="glass px-4 py-2 rounded-lg">
-                                <span className="text-purple-400">👨‍🏫</span> Industry Mentors
+                                <span className="text-yellow-400">👨‍🏫</span> Industry Mentors
                             </div>
                             <div className="glass px-4 py-2 rounded-lg">
                                 <span className="text-blue-400">🏆</span> SIH Finalists
@@ -124,7 +124,7 @@ const Mentoring = () => {
                                         {feature.icon}
                                     </div>
                                     <h4 className="text-xl font-bold mb-2">{feature.title}</h4>
-                                    <p className="text-gray-400">{feature.description}</p>
+                                    <p className="text-[#fbe9bb]">{feature.description}</p>
                                 </motion.div>
                             </ParticleCard>
                         ))}
@@ -143,17 +143,17 @@ const Mentoring = () => {
                             <div className="text-center">
                                 <div className="text-4xl mb-3">🔧</div>
                                 <h4 className="font-semibold mb-2">What to Improve</h4>
-                                <p className="text-sm text-gray-400">Identify weaknesses and areas for enhancement</p>
+                                <p className="text-sm text-[#fbe9bb]">Identify weaknesses and areas for enhancement</p>
                             </div>
                             <div className="text-center">
                                 <div className="text-4xl mb-3">➕</div>
                                 <h4 className="font-semibold mb-2">What to Add/Remove</h4>
-                                <p className="text-sm text-gray-400">Optimize features for maximum impact</p>
+                                <p className="text-sm text-[#fbe9bb]">Optimize features for maximum impact</p>
                             </div>
                             <div className="text-center">
                                 <div className="text-4xl mb-3">🚀</div>
                                 <h4 className="font-semibold mb-2">Competition Ready</h4>
-                                <p className="text-sm text-gray-400">Make your solution finale-worthy</p>
+                                <p className="text-sm text-[#fbe9bb]">Make your solution finale-worthy</p>
                             </div>
                         </div>
                     </motion.div>
@@ -164,3 +164,4 @@ const Mentoring = () => {
 };
 
 export default Mentoring;
+

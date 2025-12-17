@@ -13,7 +13,7 @@ function App() {
       <GlobalSpotlight
         enabled={true}
         spotlightRadius={300}
-        glowColor="139, 92, 246"
+        glowColor="245, 188, 34"
         targetSelector=".magic-card"
       />
       <Hero />

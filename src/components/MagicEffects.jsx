@@ -3,7 +3,7 @@ import { gsap } from 'gsap';
 
 const DEFAULT_PARTICLE_COUNT = 8;
 const DEFAULT_SPOTLIGHT_RADIUS = 300;
-const DEFAULT_GLOW_COLOR = '139, 92, 246'; // Purple theme
+const DEFAULT_GLOW_COLOR = '245, 188, 34'; // Gold theme
 const MOBILE_BREAKPOINT = 768;
 
 // Utility: Create particle element

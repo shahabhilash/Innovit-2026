@@ -47,7 +47,7 @@ const Hero = () => {
             {/* LaserFlow Animated Background */}
             <div className="absolute inset-0 z-0 overflow-hidden">
                 <LaserFlow
-                    color="#8b5cf6"
+                    color="#f5bc22"
                     horizontalSizing={1.29}
                     verticalSizing={3.9}
                     wispDensity={0.7}
@@ -109,8 +109,8 @@ const Hero = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.2 }}
                     >
-                        <Sparkles className="w-4 h-4 text-purple-400" />
-                        <span className="text-xs sm:text-sm font-medium">VIT Bhopal Blockchain Club Presents</span>
+                        <Sparkles className="w-4 h-4 text-yellow-400" />
+                        <span className="text-xs sm:text-sm font-medium text-[#fff1ce]">VIT Bhopal Blockchain Club Presents</span>
                     </motion.div>
 
                     {/* Main Title */}
@@ -126,7 +126,7 @@ const Hero = () => {
 
                     {/* Subtitle */}
                     <motion.p
-                        className="text-base sm:text-lg md:text-xl text-gray-300 mb-6 max-w-2xl mx-auto px-4"
+                        className="text-base sm:text-lg md:text-xl text-[#fbe9bb] mb-6 max-w-2xl mx-auto px-4"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.5 }}
@@ -140,14 +140,14 @@ const Hero = () => {
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.6 }}
                     >
-                        <div className="glass px-3 py-1.5 rounded-lg">
-                            <span className="text-purple-400">🏆</span> Hybrid Mode
+                        <div className="glass px-3 py-1.5 rounded-lg text-[#fff1ce]">
+                            <span className="text-yellow-400">🏆</span> Hybrid Mode
                         </div>
-                        <div className="glass px-3 py-1.5 rounded-lg">
-                            <span className="text-blue-400">🎯</span> Blockchain Focus
+                        <div className="glass px-3 py-1.5 rounded-lg text-[#fff1ce]">
+                            <span className="text-yellow-400">🎯</span> Blockchain Focus
                         </div>
-                        <div className="glass px-3 py-1.5 rounded-lg">
-                            <span className="text-cyan-400">📅</span> Finale: Feb 19, 2026
+                        <div className="glass px-3 py-1.5 rounded-lg text-[#fff1ce]">
+                            <span className="text-yellow-400">📅</span> Finale: Feb 19, 2026
                         </div>
                     </motion.div>
 
@@ -158,13 +158,13 @@ const Hero = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.7 }}
                     >
-                        <p className="text-xs sm:text-sm uppercase tracking-wider text-gray-400 mb-3">Launch Countdown</p>
+                        <p className="text-xs sm:text-sm uppercase tracking-wider text-[#fbe9bb] mb-3">Launch Countdown</p>
                         <div className="flex justify-center gap-2 sm:gap-3 md:gap-4">
                             {[
-                                { label: 'Days', value: timeLeft.days, color: '#8b5cf6' },
-                                { label: 'Hours', value: timeLeft.hours, color: '#3b82f6' },
-                                { label: 'Minutes', value: timeLeft.minutes, color: '#06b6d4' },
-                                { label: 'Seconds', value: timeLeft.seconds, color: '#ec4899' }
+                                { label: 'Days', value: timeLeft.days, color: '#f5bc22' },
+                                { label: 'Hours', value: timeLeft.hours, color: '#ffd700' },
+                                { label: 'Minutes', value: timeLeft.minutes, color: '#fff1ce' },
+                                { label: 'Seconds', value: timeLeft.seconds, color: '#f5bc22' }
                             ].map((item, index) => (
                                 <ElectricBorder
                                     key={item.label}
@@ -187,7 +187,7 @@ const Hero = () => {
                                             <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold gradient-text mb-1">
                                                 {String(item.value).padStart(2, '0')}
                                             </div>
-                                            <div className="text-[10px] sm:text-xs text-gray-400 uppercase tracking-wider">
+                                            <div className="text-[10px] sm:text-xs text-[#fbe9bb] uppercase tracking-wider">
                                                 {item.label}
                                             </div>
                                         </div>
@@ -226,7 +226,7 @@ const Hero = () => {
                     animate={{ opacity: 1, y: [0, 10, 0] }}
                     transition={{ delay: 1, duration: 2, repeat: Infinity }}
                 >
-                    <ChevronDown className="w-6 h-6 sm:w-8 sm:h-8 text-purple-400" />
+                    <ChevronDown className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-400" />
                 </motion.div>
             </div>
         </section>
