@@ -19,7 +19,7 @@ const Prizes = () => {
         {
             icon: <Award className="w-8 h-8" />,
             title: "Certificates",
-            color: "from-purple-700 to-purple-900",
+            color: "from-amber-400 to-yellow-500",
             items: [
                 "Phase-wise certificates for all participants",
                 "Finalist certificates for Top 15 teams",
@@ -97,7 +97,7 @@ const Prizes = () => {
                             transition={{ duration: 0.6, delay: index * 0.1 }}
                         >
                             <ElectricBorder
-                                color={index === 0 ? '#f5bc22' : index === 1 ? '#2e0d8b' : index === 2 ? '#ffd700' : '#f5bc22'}
+                                color={index === 0 ? '#f5bc22' : index === 1 ? '#f5bc22' : index === 2 ? '#ffd700' : '#f5bc22'}
                                 speed={1.2}
                                 chaos={0.6}
                                 thickness={2}
@@ -106,7 +106,7 @@ const Prizes = () => {
                                 <ParticleCard
                                     className="magic-card"
                                     particleCount={8}
-                                    glowColor={index === 0 ? '245, 188, 34' : index === 1 ? '46, 13, 139' : index === 2 ? '255, 215, 0' : '245, 188, 34'}
+                                    glowColor={index === 0 ? '245, 188, 34' : index === 1 ? '245, 188, 34' : index === 2 ? '255, 215, 0' : '245, 188, 34'}
                                     enableTilt={true}
                                     enableMagnetism={true}
                                     clickEffect={true}

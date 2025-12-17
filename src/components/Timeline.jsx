@@ -39,7 +39,7 @@ const Timeline = () => {
             title: 'Phase 1 Deadline',
             description: 'Registration & idea submission closes',
             icon: <Lightbulb className="w-6 h-6" />,
-            color: 'purple'
+            color: 'cream'
         },
         {
             date: '16 Jan 2026',
@@ -74,7 +74,7 @@ const Timeline = () => {
             title: 'Finalists Announced',
             description: 'Top teams selected for grand finale',
             icon: <Trophy className="w-6 h-6" />,
-            color: 'purple'
+            color: 'gold'
         },
         {
             date: '11-17 Feb 2026',
