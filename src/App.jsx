@@ -9,6 +9,9 @@ import Mentoring from './components/Mentoring';
 import Footer from './components/Footer';
 import Navbar from './components/Navbar';
 import Contact from './components/Contact';
+import Rules from './components/Rules';
+import Guidelines from './components/Guidelines';
+import ProblemStatement from './components/ProblemStatement';
 import RegisterToast from './components/RegisterToast';
 import WhatsAppFloat from './components/WhatsAppFloat';
 import Preloader from './components/Preloader';
@@ -57,6 +60,9 @@ function App() {
                 </>
               } />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/guidelines" element={<Guidelines />} />
+              <Route path="/rules" element={<Guidelines />} />
+              <Route path="/problem-statement" element={<ProblemStatement />} />
             </Routes>
 
             <Footer />

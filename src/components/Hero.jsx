@@ -7,6 +7,7 @@ import { ParticleCard } from './MagicEffects';
 import PixelBlast from './PixelBlast';
 import { useIsMobile } from '../hooks/useIsMobile';
 import DecryptedText from './DecryptedText';
+import Reveal from './Reveal';
 
 const Hero = () => {
     const isMobile = useIsMobile();
@@ -117,85 +118,38 @@ const Hero = () => {
             {/* Content Container with proper spacing */}
             <div className="relative z-10 w-full max-w-6xl mx-auto text-center pt-24 sm:pt-20">
                 <motion.div
-                    initial={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8 }}
+                    transition={{ duration: 0.6 }}
                 >
                     {/* Badge */}
-                    <motion.div
-                        className="inline-flex items-center gap-2 glass px-4 py-2 mb-6"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.2 }}
-                    >
+                    <Reveal className="inline-flex items-center gap-2 glass px-4 py-2 mb-6" delay={0.15}>
                         <Sparkles className="w-4 h-4 text-yellow-400" />
                         <span className="text-xs sm:text-sm font-medium text-[#fff1ce]">VIT Bhopal Blockchain Club Presents</span>
-                    </motion.div>
+                    </Reveal>
 
                     {/* Main Title */}
                     <motion.h1
                         className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-4 tracking-tight leading-tight"
-                        initial={isMobile ? {} : { opacity: 0, y: 30 }}
-                        animate={isMobile ? {} : { opacity: 1, y: 0 }}
-                        transition={isMobile ? {} : { delay: 0.3, duration: 0.8 }}
                     >
-                        <span className="gradient-text block">
-                            {isMobile ? (
-                                'INNOVIT'
-                            ) : (
-                                <DecryptedText
-                                    text="INNOVIT"
-                                    animateOn="load"
-                                    speed={3}
-                                    maxIterations={20}
-                                    sequential={true}
-                                    revealDirection="start"
-                                />
-                            )}
-                        </span>
-                        <span className="gradient-text-cyber block text-4xl sm:text-5xl md:text-6xl lg:text-7xl mt-2">
-                            {isMobile ? (
-                                '2026'
-                            ) : (
-                                <DecryptedText
-                                    text="2026"
-                                    animateOn="load"
-                                    speed={3}
-                                    maxIterations={15}
-                                    sequential={true}
-                                    revealDirection="start"
-                                />
-                            )}
-                        </span>
+                        <Reveal variant="fade" delay={0.2}>
+                            <span className="gradient-text block">
+                                INNOVIT
+                            </span>
+                        </Reveal>
+                        <Reveal variant="fade" delay={0.3}>
+                            <span className="gradient-text-cyber block text-4xl sm:text-5xl md:text-6xl lg:text-7xl mt-2">
+                                2026
+                            </span>
+                        </Reveal>
                     </motion.h1>
 
                     {/* Subtitle */}
-                    <motion.p
-                        className="text-lg sm:text-xl md:text-2xl text-[#fff1ce] mb-8 max-w-2xl mx-auto"
-                        initial={isMobile ? {} : { opacity: 0, y: 20 }}
-                        animate={isMobile ? {} : { opacity: 1, y: 0 }}
-                        transition={isMobile ? {} : { delay: 0.5, duration: 0.8 }}
-                    >
-                        {isMobile ? (
-                            'Ideas Powering Atmanirbhar Bharat'
-                        ) : (
-                            <DecryptedText
-                                text="Ideas Powering Atmanirbhar Bharat"
-                                animateOn="load"
-                                speed={3}
-                                maxIterations={18}
-                                sequential={true}
-                                revealDirection="start"
-                            />
-                        )}
-                    </motion.p>
+                    <Reveal className="text-lg sm:text-xl md:text-2xl text-[#fff1ce] mb-8 max-w-2xl mx-auto" delay={0.4}>
+                        Ideas Powering Atmanirbhar Bharat
+                    </Reveal>
 
-                    <motion.div
-                        className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-8 text-xs sm:text-sm px-4"
-                        initial={isMobile ? {} : { opacity: 0 }}
-                        animate={isMobile ? {} : { opacity: 1 }}
-                        transition={isMobile ? {} : { delay: 0.6 }}
-                    >
+                    <Reveal className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-8 text-xs sm:text-sm px-4" delay={0.5}>
                         <div className="glass px-3 py-1.5 rounded-lg text-[#fff1ce]">
                             <span className="text-yellow-400">🏆</span> Hybrid Mode
                         </div>
@@ -218,15 +172,10 @@ const Hero = () => {
                         >
                             <span className="text-yellow-400">📺</span> YouTube Live
                         </a>
-                    </motion.div>
+                    </Reveal>
 
                     {/* Countdown Timer */}
-                    <motion.div
-                        className="mb-8 px-4"
-                        initial={isMobile ? {} : { opacity: 0, y: 20 }}
-                        animate={isMobile ? {} : { opacity: 1, y: 0 }}
-                        transition={isMobile ? {} : { delay: 0.7 }}
-                    >
+                    <Reveal className="mb-8 px-4" delay={0.6}>
                         <p className="text-xs sm:text-sm uppercase tracking-wider text-[#fbe9bb] mb-3">Launch Countdown</p>
                         <div className="flex justify-center gap-2 sm:gap-3 md:gap-4">
                             {[
@@ -235,6 +184,7 @@ const Hero = () => {
                                 { label: 'Minutes', value: timeLeft.minutes, color: '#fff1ce' },
                                 { label: 'Seconds', value: timeLeft.seconds, color: '#f5bc22' }
                             ].map((item, index) => (
+                                <Reveal key={item.label} delay={0.65 + index * 0.05}>
                                 <ElectricBorder
                                     key={item.label}
                                     color={item.color}
@@ -262,17 +212,13 @@ const Hero = () => {
                                         </div>
                                     </ParticleCard>
                                 </ElectricBorder>
+                                </Reveal>
                             ))}
                         </div>
-                    </motion.div>
+                    </Reveal>
 
                     {/* CTA Buttons */}
-                    <motion.div
-                        className="flex flex-col sm:flex-row gap-3 justify-center items-center px-4"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.8 }}
-                    >
+                    <Reveal className="flex flex-col sm:flex-row gap-3 justify-center items-center px-4" delay={0.8}>
                         <Link to="timeline" smooth={true} duration={800}>
                             <button className="btn-primary flex items-center gap-2 w-full sm:w-auto">
                                 <Rocket className="w-4 h-4" />
@@ -285,18 +231,13 @@ const Hero = () => {
                                 Explore Rounds
                             </button>
                         </Link>
-                    </motion.div>
+                    </Reveal>
                 </motion.div>
 
                 {/* Scroll Indicator */}
-                <motion.div
-                    className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-                    initial={isMobile ? {} : { opacity: 0 }}
-                    animate={isMobile ? {} : { opacity: 1 }}
-                    transition={isMobile ? {} : { delay: 1.2 }}
-                >
+                <Reveal className="absolute bottom-8 left-1/2 transform -translate-x-1/2" delay={1.0}>
                     <ChevronDown className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-400" />
-                </motion.div>
+                </Reveal>
             </div>
         </section>
     );
