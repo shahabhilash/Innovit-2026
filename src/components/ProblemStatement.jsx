@@ -111,7 +111,7 @@ const ProblemStatement = () => {
     ];
 
     return (
-        <section className="section-padding relative overflow-hidden">
+        <section className="section-padding relative overflow-hidden pt-24 md:pt-32 mt-16 md:mt-20">
             <div className="container relative z-10">
                 {/* Header */}
                 <motion.div
