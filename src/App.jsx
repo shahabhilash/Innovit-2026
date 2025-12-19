@@ -15,6 +15,7 @@ import ProblemStatement from './components/ProblemStatement';
 import RegisterToast from './components/RegisterToast';
 import WhatsAppFloat from './components/WhatsAppFloat';
 import Preloader from './components/Preloader';
+import AnnouncementBanner from './components/AnnouncementBanner';
 import { GlobalSpotlight } from './components/MagicEffects';
 import { useIsMobile } from './hooks/useIsMobile';
 
@@ -33,6 +34,9 @@ function App() {
           <div className="min-h-screen">
             {/* Navbar */}
             <Navbar />
+
+            {/* Announcement Banner */}
+            <AnnouncementBanner />
 
             {/* Register Toast Notification */}
             <RegisterToast />
