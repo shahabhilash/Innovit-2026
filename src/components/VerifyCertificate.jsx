@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, ShieldCheck, AlertCircle, CheckCircle, ArrowLeft, Loader2, Award } from 'lucide-react';
+import { Search, ShieldCheck, AlertCircle, CheckCircle, ArrowLeft, Loader2, Award, ExternalLink, RefreshCw, FileText, ZoomIn } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useIsMobile } from '../hooks/useIsMobile';
 import { supabase } from '../lib/supabaseClient';
 import toast, { Toaster } from 'react-hot-toast';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
@@ -9,15 +10,16 @@ import Papa from 'papaparse';
 import QRCode from 'qrcode';
 
 const themes = [
-  { id: 'TH01', name: 'Open Innovation', color: '#FF9933' },
-  { id: 'TH02', name: 'Heritage & Culture', color: '#FFFFFF' },
-  { id: 'TH03', name: 'MedTech / BioTech / HealthTech', color: '#138808' },
-  { id: 'TH04', name: 'Agriculture, FoodTech & Rural Development', color: '#FF9933' },
-  { id: 'TH05', name: 'Blockchain & Cybersecurity', color: '#1E3A8A' }
+    { id: 'TH01', name: 'Open Innovation', color: '#FF9933' },
+    { id: 'TH02', name: 'Heritage & Culture', color: '#FFFFFF' },
+    { id: 'TH03', name: 'MedTech / BioTech / HealthTech', color: '#138808' },
+    { id: 'TH04', name: 'Agriculture, FoodTech & Rural Development', color: '#FF9933' },
+    { id: 'TH05', name: 'Blockchain & Cybersecurity', color: '#1E3A8A' }
 ];
 
 const VerifyCertificate = () => {
     const navigate = useNavigate();
+    const isMobile = useIsMobile();
     const [searchParams] = useSearchParams();
     const [certificateId, setCertificateId] = useState(searchParams.get('id') || '');
     const [isVerifying, setIsVerifying] = useState(false);
@@ -27,6 +29,27 @@ const VerifyCertificate = () => {
     const [isPreviewLoading, setIsPreviewLoading] = useState(false);
     const [verifiedTheme, setVerifiedTheme] = useState(null);
     const [results, setResults] = useState({});
+    const [iframeScale, setIframeScale] = useState(1);
+    const containerRef = useRef(null);
+
+    useEffect(() => {
+        const updateScale = () => {
+            if (containerRef.current) {
+                const containerWidth = containerRef.current.offsetWidth;
+                const pdfBaseWidth = 1122;
+                setIframeScale(containerWidth / pdfBaseWidth);
+            }
+        };
+
+        updateScale();
+        const timer = setTimeout(updateScale, 500);
+
+        window.addEventListener('resize', updateScale);
+        return () => {
+            window.removeEventListener('resize', updateScale);
+            clearTimeout(timer);
+        };
+    }, [verificationResult, pdfPreviewUrl]);
 
     // Load CSV results
     useEffect(() => {
@@ -198,14 +221,14 @@ const VerifyCertificate = () => {
 
                 let foundTheme = null;
                 const searchTeamName = normalizeString(data.team || '');
-                
+
                 for (const theme of themes) {
                     const csvData = results[theme.id] || [];
                     const teamMatch = csvData.find(p => {
                         const csvTeamName = normalizeString(p['Team Name'] || '');
                         return csvTeamName === searchTeamName;
                     });
-                    
+
                     if (teamMatch) {
                         foundTheme = theme;
                         break;
@@ -214,7 +237,7 @@ const VerifyCertificate = () => {
 
                 if (foundTheme) {
                     setVerifiedTheme(foundTheme);
-                    
+
                     // Generate PDF preview
                     setIsPreviewLoading(true);
                     try {
@@ -369,20 +392,46 @@ const VerifyCertificate = () => {
                                     <Award className="w-6 h-6 text-green-500" />
                                     Certificate Preview
                                 </h3>
-                                
+
                                 {isPreviewLoading ? (
                                     <div className="bg-[#0a0a0f]/50 border border-white/10 rounded-2xl p-12 flex flex-col items-center justify-center">
                                         <Loader2 className="w-10 h-10 mb-4 text-green-500 animate-spin" />
                                         <p className="text-gray-400">Generating certificate preview...</p>
                                     </div>
                                 ) : pdfPreviewUrl ? (
-                                    <div className="relative w-full aspect-[1.414/1] bg-[#1a1a1a] rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
-                                        <iframe
-                                            src={`${pdfPreviewUrl}#toolbar=0&navpanes=0&scrollbar=0&view=Fit`}
-                                            className="absolute inset-0 w-full h-full border-none"
-                                            title="Certificate PDF Preview"
-                                        />
+                                    <div
+                                        ref={containerRef}
+                                        className="relative w-full aspect-[1.414/1] bg-[#1a1a1a] rounded-2xl border border-white/10 overflow-hidden shadow-2xl flex items-center justify-center"
+                                    >
+                                        {pdfPreviewUrl && (
+                                            <div
+                                                style={{
+                                                    width: '1122px', // Fixed base width
+                                                    height: '793px', // Fixed base height
+                                                    transform: `scale(${iframeScale})`,
+                                                    transformOrigin: 'top left',
+                                                    position: 'absolute',
+                                                    top: 0,
+                                                    left: 0,
+                                                    pointerEvents: 'auto'
+                                                }}
+                                            >
+                                                <iframe
+                                                    src={`${pdfPreviewUrl}#toolbar=0&navpanes=0&scrollbar=0&view=Fit`}
+                                                    className="w-full h-full border-none"
+                                                    title="Certificate PDF Preview"
+                                                />
+                                            </div>
+                                        )}
+
                                         <div className="absolute inset-0 border-2 pointer-events-none border-green-500/20 rounded-2xl" />
+
+                                        {isMobile && (
+                                            <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 flex items-center gap-2 pointer-events-none">
+                                                <ZoomIn className="w-3 h-3 text-green-500" />
+                                                <span className="text-[10px] text-white font-medium">Interactive Preview</span>
+                                            </div>
+                                        )}
                                     </div>
                                 ) : null}
                             </motion.div>

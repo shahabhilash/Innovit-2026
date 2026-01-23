@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Download, FileText, User, Mail, CheckCircle, Award, Search, ShieldCheck, Loader2, X, Copy, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Download, FileText, User, Mail, CheckCircle, Award, Search, ShieldCheck, Loader2, X, Copy, ExternalLink, RefreshCw, ZoomIn } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useIsMobile } from '../hooks/useIsMobile';
 import toast, { Toaster } from 'react-hot-toast';
 import { supabase } from '../lib/supabaseClient';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
@@ -19,6 +20,7 @@ const themes = [
 
 const Certificate = () => {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [isVerifying, setIsVerifying] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [userData, setUserData] = useState(null);
@@ -33,6 +35,29 @@ const Certificate = () => {
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [qrCodeUrl, setQrCodeUrl] = useState(null);
+  const [iframeScale, setIframeScale] = useState(1);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const updateScale = () => {
+      if (containerRef.current) {
+        const containerWidth = containerRef.current.offsetWidth;
+        // Base width for PDF preview (A4 Landscape at ~133dpi or high density)
+        // 1122 is a good balance for quality and scaling
+        const pdfBaseWidth = 1122;
+        setIframeScale(containerWidth / pdfBaseWidth);
+      }
+    };
+
+    updateScale();
+    const timer = setTimeout(updateScale, 500); // Delayed check for animation completion
+
+    window.addEventListener('resize', updateScale);
+    return () => {
+      window.removeEventListener('resize', updateScale);
+      clearTimeout(timer);
+    };
+  }, [userData, pdfPreviewUrl]);
 
   // Load results from all 5 theme CSV files
   useEffect(() => {
@@ -188,7 +213,7 @@ const Certificate = () => {
       // 3. Search for Team Name and Leader Name in theme CSVs to get Theme ID
       let foundTheme = null;
       let foundInCSV = null;
-      
+
       const cleanName = (name) => (name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
       const supabaseTeamName = teamNameFromSupabase.trim();
       const supabaseLeaderNameClean = cleanName(leaderName);
@@ -481,7 +506,7 @@ const Certificate = () => {
       toast.error('Please verify your certificate first');
       return;
     }
-    
+
     // Generate QR code for share modal
     try {
       const verifyUrl = getShareLink();
@@ -497,7 +522,7 @@ const Certificate = () => {
     } catch (error) {
       console.error('Error generating QR code:', error);
     }
-    
+
     setIsShareModalOpen(true);
   };
 
@@ -869,15 +894,49 @@ const Certificate = () => {
                     exit={{ opacity: 0, scale: 0.95 }}
                     className="flex flex-col flex-1"
                   >
-                    <div className="relative w-full aspect-[1.414/1] bg-[#1a1a1a] rounded-2xl border border-white/10 overflow-hidden mb-8 shadow-2xl">
-                      <iframe
-                        src={`${pdfPreviewUrl}#toolbar=0&navpanes=0&scrollbar=0&view=Fit`}
-                        className="absolute inset-0 w-full h-full border-none"
-                        title="Certificate PDF Preview"
-                      />
+                    <div
+                      ref={containerRef}
+                      className="relative w-full aspect-[1.414/1] bg-[#1a1a1a] rounded-2xl border border-white/10 overflow-hidden mb-8 shadow-2xl flex items-center justify-center"
+                    >
+                      {pdfPreviewUrl && (
+                        <div
+                          style={{
+                            width: '1122px', // Fixed base width
+                            height: '793px', // Fixed base height (1122 / 1.414)
+                            transform: `scale(${iframeScale})`,
+                            transformOrigin: 'top left',
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            pointerEvents: 'auto'
+                          }}
+                        >
+                          <iframe
+                            src={`${pdfPreviewUrl}#toolbar=0&navpanes=0&scrollbar=0&view=Fit`}
+                            className="w-full h-full border-none"
+                            title="Certificate PDF Preview"
+                          />
+                        </div>
+                      )}
+
+                      {/* Fallback & Overlay */}
+                      {!pdfPreviewUrl && !isPreviewLoading && (
+                        <div className="flex flex-col items-center text-gray-500">
+                          <Search className="w-12 h-12 mb-4 opacity-20" />
+                          <p>Verifying your details...</p>
+                        </div>
+                      )}
 
                       {/* Decorative border overlay */}
                       <div className="absolute inset-0 border-2 pointer-events-none border-yellow-500/20 rounded-2xl" />
+
+                      {/* Quality notice for mobile */}
+                      {isMobile && (
+                        <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 flex items-center gap-2 pointer-events-none">
+                          <ZoomIn className="w-3 h-3 text-yellow-500" />
+                          <span className="text-[10px] text-white font-medium">Interactive Preview</span>
+                        </div>
+                      )}
                     </div>
 
                     {/* Certificate ID and QR Code Section */}
@@ -891,7 +950,7 @@ const Certificate = () => {
                           </div>
                         </div>
                       )}
-                      
+
                       {/* Certificate ID Box */}
                       <div className="bg-[#0a0a0f] border border-yellow-500/20 rounded-xl p-4 flex flex-col justify-center">
                         <p className="mb-3 text-xs font-semibold tracking-wider text-gray-500 uppercase">Certificate ID</p>
