@@ -51,6 +51,7 @@ function App() {
   return (
     <>
       {/* Preloader */}
+      <Analytics />
       <Preloader onLoadComplete={() => setIsLoading(false)} />
 
       {/* Main App Content - Hidden until loading completes */}
