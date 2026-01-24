@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { Analytics } from "@vercel/analytics/react";
 import Hero from './components/Hero';
 import Timeline from './components/Timeline';
 import LiveStream from './components/LiveStream';
