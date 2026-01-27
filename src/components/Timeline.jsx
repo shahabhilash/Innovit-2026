@@ -56,35 +56,28 @@ const Timeline = () => {
             color: 'light'
         },
         {
-            date: '7 Feb 2026',
+            date: '13 Feb 2026',
             title: 'Phase 2 Deadline',
             description: 'Prototype & code submission closes',
             icon: <Code className="w-6 h-6" />,
             color: 'gold'
         },
         {
-            date: '9 Feb 2026',
+            date: '15 Feb 2026',
             title: 'Phase 2 Results',
             description: 'Evaluation results announced',
             icon: <CheckCircle className="w-6 h-6" />,
             color: 'cream'
         },
         {
-            date: '10 Feb 2026',
-            title: 'Finalists Announced',
-            description: 'Top teams selected for grand finale',
-            icon: <Trophy className="w-6 h-6" />,
-            color: 'gold'
-        },
-        {
-            date: '11-17 Feb 2026',
-            title: 'Mentoring Week',
+            date: '18-22 Feb 2026',
+            title: 'Mentoring Phase',
             description: 'Intensive mentoring by experts & SIH finalists',
             icon: <Users className="w-6 h-6" />,
             color: 'light'
         },
         {
-            date: '19 Feb 2026',
+            date: '26 Feb 2026',
             title: 'Grand Finale',
             description: 'Offline finale event at VIT Bhopal',
             icon: <Trophy className="w-6 h-6" />,
