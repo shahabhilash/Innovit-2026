@@ -284,7 +284,7 @@ const Hero = () => {
                             <span className="text-saffron-400">🏆</span> Hybrid Mode
                         </div>
                         <div className="glass px-3 py-1.5 rounded-lg text-white/90 border border-india-green-400/20">
-                            <span className="text-india-green-400">📅</span> Finale: Feb 19, 2026
+                            <span className="text-india-green-400">📅</span> Finale: Feb 26, 2026
                         </div>
                         <a
                             href="https://forms.gle/vbYnvFGaUz3AU1nJA"
