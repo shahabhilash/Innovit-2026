@@ -64,7 +64,7 @@ const Mentoring = () => {
                         Between Round 2 & Round 3: Intensive guidance to refine your solution
                     </p>
                     <div className="inline-block px-6 py-2 rounded-full bg-gradient-to-r from-yellow-500 to-amber-500 text-white font-semibold">
-                        11 - 17 February 2026
+                        18 - 22 February 2026
                     </div>
                 </motion.div>
 

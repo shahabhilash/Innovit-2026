@@ -45,7 +45,7 @@ const Hero = () => {
     };
 
     useEffect(() => {
-        const phase1Deadline = new Date('2026-02-07T23:59:59');
+        const phase1Deadline = new Date('2026-02-13T23:59:59');
 
         const timer = setInterval(() => {
             const now = new Date();
