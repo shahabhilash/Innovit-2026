@@ -281,10 +281,10 @@ const Hero = () => {
 
                     <Reveal className="flex flex-wrap justify-center gap-2 px-4 mb-8 text-xs sm:gap-3 sm:text-sm" delay={0.5}>
                         <div className="glass px-3 py-1.5 rounded-lg text-white/90 border border-saffron-400/20">
-                            <span className="text-saffron-400">🏆</span> Hybrid Mode
+                            <span className="text-saffron-400">🏆</span> Venue : AB1 - 316
                         </div>
                         <div className="glass px-3 py-1.5 rounded-lg text-white/90 border border-india-green-400/20">
-                            <span className="text-india-green-400">📅</span> Finale: Feb 26, 2026
+                            <span className="text-india-green-400">📅</span> Finale: Feb 28, 2026
                         </div>
                         <a
                             href="https://forms.gle/vbYnvFGaUz3AU1nJA"
@@ -292,7 +292,7 @@ const Hero = () => {
                             rel="noopener noreferrer"
                             className="glass px-3 py-1.5 rounded-lg text-white/90 hover:text-saffron-400 border border-saffron-400/20 hover:border-saffron-400/60 hover:bg-saffron-400/10 transition-all duration-200 cursor-pointer"
                         >
-                            <span className="text-saffron-400">📅</span> Phase 2 Registration Open
+                            <span className="text-saffron-400">📅</span> Phase 2 Phase Live ....
                         </a>
                     </Reveal>
 

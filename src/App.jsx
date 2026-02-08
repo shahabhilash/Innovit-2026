@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Analytics } from "@vercel/analytics/react";
 import Hero from './components/Hero';
+import FinaleReveal from './components/FinaleReveal';
 import Timeline from './components/Timeline';
 import LiveStream from './components/LiveStream';
 import Rounds from './components/Rounds';
@@ -83,6 +84,7 @@ function App() {
               <Route path="/" element={
                 <>
                   <Hero />
+                  <FinaleReveal />
                   <Timeline />
                   <LiveStream />
                   <Rounds />

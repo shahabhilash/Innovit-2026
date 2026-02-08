@@ -77,7 +77,7 @@ const Timeline = () => {
             color: 'light'
         },
         {
-            date: '26 Feb 2026',
+            date: '28 Feb 2026',
             title: 'Grand Finale',
             description: 'Offline finale event at VIT Bhopal',
             icon: <Trophy className="w-6 h-6" />,
