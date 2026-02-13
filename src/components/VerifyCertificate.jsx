@@ -199,6 +199,11 @@ const VerifyCertificate = () => {
         setIsVerifying(true);
         setVerificationResult(null);
         setError(null);
+        // setVerifiedTheme(null); // This line wasn't in original but harmless to remove if reverting
+        if (pdfPreviewUrl) {
+            URL.revokeObjectURL(pdfPreviewUrl);
+            setPdfPreviewUrl(null);
+        }
 
         try {
             const { data, error } = await supabase
@@ -241,9 +246,6 @@ const VerifyCertificate = () => {
                     // Generate PDF preview
                     setIsPreviewLoading(true);
                     try {
-                        if (pdfPreviewUrl) {
-                            URL.revokeObjectURL(pdfPreviewUrl);
-                        }
                         const blob = await generateCertificateBlob(data, foundTheme);
                         const url = URL.createObjectURL(blob);
                         setPdfPreviewUrl(url);

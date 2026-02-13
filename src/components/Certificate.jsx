@@ -37,6 +37,8 @@ const Certificate = () => {
   const [qrCodeUrl, setQrCodeUrl] = useState(null);
   const [iframeScale, setIframeScale] = useState(1);
   const containerRef = useRef(null);
+  const [activeTab, setActiveTab] = useState('phase1'); // 'phase1', 'phase2', 'officials'
+  const [officialRole, setOfficialRole] = useState('mentor'); // 'mentor', 'volunteer', 'judge', 'student_coordinator'
 
   useEffect(() => {
     const updateScale = () => {
@@ -122,12 +124,6 @@ const Certificate = () => {
       return;
     }
 
-    // Check if CSV data is loaded
-    if (Object.keys(results).length === 0) {
-      toast.error('System is still loading data. Please wait a moment...');
-      return;
-    }
-
     setIsVerifying(true);
     setUserData(null);
     setVerifiedTheme(null);
@@ -137,221 +133,66 @@ const Certificate = () => {
     }
 
     try {
-      // 1. Verify Email from Supabase
-      const { data: sbUser, error } = await supabase
-        .from('id_card_users')
-        .select('*')
-        .eq('email_id', formData.email.toLowerCase().trim())
-        .maybeSingle();
-
-      if (error) {
-        toast.error('Verification failed. Please try again.');
-        console.error('Supabase error:', error);
-        return;
-      }
-
-      if (!sbUser) {
-        toast.error('Email not found in our database. Please use your registered email.');
-        return;
-      }
-
-      const teamNameFromSupabase = sbUser.team || '';
-      const userNameFromSupabase = sbUser.name || '';
-      let leaderName = '';
-
-      // 2. Identify the Team Leader
-      if (sbUser.team_position === 'Leader') {
-        leaderName = userNameFromSupabase;
-      } else if (teamNameFromSupabase) {
-        // Find all potential leaders for this team (CASE-SENSITIVE)
-        // This distinguishes between "RunTime Terrors" and "Runtime Terrors"
-        // We use the exact team name from the user's record (including any spaces)
-        const { data: potentialLeaders, error: leaderError } = await supabase
-          .from('id_card_users')
-          .select('name, team, created_at')
-          .eq('team', teamNameFromSupabase)
-          .eq('team_position', 'Leader');
-
-        if (!leaderError && potentialLeaders && potentialLeaders.length > 0) {
-          // Disambiguate if multiple leaders found for the EXACT same team name
-          // (Picks the one closest in registration time)
-          let bestLeader = null;
-          if (potentialLeaders.length === 1) {
-            bestLeader = potentialLeaders[0];
-          } else {
-            const userTime = new Date(sbUser.created_at).getTime();
-            bestLeader = potentialLeaders.reduce((prev, curr) => {
-              const prevDiff = Math.abs(new Date(prev.created_at).getTime() - userTime);
-              const currDiff = Math.abs(new Date(curr.created_at).getTime() - userTime);
-              return currDiff < prevDiff ? curr : prev;
-            });
-          }
-          leaderName = bestLeader.name;
-        } else {
-          // Fallback if no exact case leader found, try case-insensitive
-          // We search for the team name as is, and also trimmed
-          const { data: caseInsensitiveLeaders } = await supabase
-            .from('id_card_users')
-            .select('name, team, created_at')
-            .ilike('team', teamNameFromSupabase)
-            .eq('team_position', 'Leader');
-
-          if (caseInsensitiveLeaders && caseInsensitiveLeaders.length > 0) {
-            const userTime = new Date(sbUser.created_at).getTime();
-            const bestLeader = caseInsensitiveLeaders.reduce((prev, curr) => {
-              const prevDiff = Math.abs(new Date(prev.created_at).getTime() - userTime);
-              const currDiff = Math.abs(new Date(curr.created_at).getTime() - userTime);
-              return currDiff < prevDiff ? curr : prev;
-            });
-            leaderName = bestLeader.name;
-          } else {
-            leaderName = userNameFromSupabase;
-          }
-        }
-      }
-
-      // 3. Search for Team Name and Leader Name in theme CSVs to get Theme ID
-      let foundTheme = null;
-      let foundInCSV = null;
-
-      const cleanName = (name) => (name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-      const supabaseTeamName = teamNameFromSupabase.trim();
-      const supabaseLeaderNameClean = cleanName(leaderName);
-
-      // STEP A: Try Exact Case Match for Team Name + Normalized Leader Name
-      for (const theme of themes) {
-        const data = results[theme.id] || [];
-        const match = data.find(p => {
-          const csvTeamName = (p['Team Name'] || '').trim();
-          const csvLeaderNameClean = cleanName(p['Team Leader Name'] || '');
-          return csvTeamName === supabaseTeamName && csvLeaderNameClean === supabaseLeaderNameClean;
-        });
-
-        if (match) {
-          foundTheme = theme;
-          foundInCSV = match;
-          break;
-        }
-      }
-
-      // STEP B: Try Case-Insensitive Team Name + Normalized Leader Name (Fallback)
-      if (!foundTheme) {
-        const supabaseTeamNameLower = supabaseTeamName.toLowerCase();
-        for (const theme of themes) {
-          const data = results[theme.id] || [];
-          const match = data.find(p => {
-            const csvTeamNameLower = (p['Team Name'] || '').trim().toLowerCase();
-            const csvLeaderNameClean = cleanName(p['Team Leader Name'] || '');
-            return csvTeamNameLower === supabaseTeamNameLower && csvLeaderNameClean === supabaseLeaderNameClean;
-          });
-
-          if (match) {
-            foundTheme = theme;
-            foundInCSV = match;
-            break;
-          }
-        }
-      }
-
-      // STEP C: Try matching just Team Name with Exact Case
-      if (!foundTheme) {
-        for (const theme of themes) {
-          const data = results[theme.id] || [];
-          const match = data.find(p => {
-            const csvTeamName = (p['Team Name'] || '').trim();
-            return csvTeamName === supabaseTeamName;
-          });
-
-          if (match) {
-            foundTheme = theme;
-            foundInCSV = match;
-            break;
-          }
-        }
-      }
-
-      // STEP D: Final Fallback: Original case-insensitive logic
-      if (!foundTheme) {
-        const searchTeamName = teamNameFromSupabase.toLowerCase().trim();
-        for (const theme of themes) {
-          const data = results[theme.id] || [];
-          const teamMatch = data.find(p => {
-            const csvTeamName = (p['Team Name'] || '').toLowerCase().trim();
-            return csvTeamName === searchTeamName;
-          });
-
-          if (teamMatch) {
-            foundTheme = theme;
-            foundInCSV = teamMatch;
-            break;
-          }
-        }
-      }
-
-      // STEP E: Last resort: Search by user's own name
-      if (!foundTheme) {
-        const searchName = cleanName(userNameFromSupabase);
-        for (const theme of themes) {
-          const data = results[theme.id] || [];
-          const nameMatch = data.find(p => {
-            const csvLeaderName = cleanName(p['Team Leader Name'] || p['Name'] || '');
-            return csvLeaderName === searchName;
-          });
-
-          if (nameMatch) {
-            foundTheme = theme;
-            foundInCSV = nameMatch;
-            break;
-          }
-        }
-      }
-
-      // 6. Generate or retrieve Certificate Hash
-      let finalHash = sbUser.certificate_hash_id;
-
-      if (foundTheme && !finalHash) {
-        // Generate a deterministic but unique hash
-        // Format: INV26-{THEME_ID}-{RANDOM_CHARS}
-        const randomPart = Math.random().toString(36).substring(2, 7).toUpperCase();
-        finalHash = `INV26-${Date.now().toString(36).toUpperCase()}-${randomPart}`;
-
-        // Update Supabase
-        const { error: updateError } = await supabase
-          .from('id_card_users')
-          .update({ certificate_hash_id: finalHash })
-          .eq('id', sbUser.id);
-
-        if (updateError) {
-          console.error('Error saving hash:', updateError);
-        }
-      }
-
-      if (foundTheme) {
-        const finalUserData = {
-          ...sbUser,
-          certificate_hash_id: finalHash,
-          csvData: foundInCSV
+      // Pure frontend simulation for Phase 1 as requested
+      setTimeout(async () => {
+        const dummyData = {
+          name: formData.name || "Test Participant",
+          team: formData.team || "Test Team",
+          email_id: formData.email,
+          certificate_hash_id: "P1-" + Math.random().toString(36).substr(2, 9).toUpperCase()
         };
-        setUserData(finalUserData);
-        setVerifiedTheme(foundTheme);
-        setFormData(prev => ({
-          ...prev,
-          name: userNameFromSupabase,
-          team: teamNameFromSupabase
-        }));
-        toast.success(`Verified! Your certificate for ${foundTheme.name} is ready.`);
 
-        // Generate PDF preview
-        await updatePdfPreview(finalUserData, foundTheme);
-      } else {
-        toast.error('Your team was not found in any theme records. Please contact support.');
-      }
-    } catch (err) {
-      console.error('Verification error:', err);
-      toast.error('An unexpected error occurred');
-    } finally {
+        const dummyTheme = { id: "Participation", name: "Phase 1 Hackathon" };
+
+        setUserData(dummyData);
+        setVerifiedTheme(dummyTheme);
+
+        // Generate PDF Preview
+        await updatePdfPreview(dummyData, dummyTheme);
+
+        setIsVerifying(false);
+        toast.success('Verified! Your Phase 1 certificate is ready.');
+      }, 1500);
+    } catch (error) {
+      console.error('Verification process failed:', error);
+      toast.error('An unexpected error occurred during verification.');
       setIsVerifying(false);
     }
+  };
+
+  const handleVerifyOfficial = async () => {
+    if (!formData.email) {
+      toast.error('Please enter your email address');
+      return;
+    }
+
+    setIsVerifying(true);
+    setUserData(null);
+    setVerifiedTheme(null);
+    setPdfPreviewUrl(null);
+
+    // Simulate verification for frontend demo
+    setTimeout(async () => {
+      const dummyData = {
+        name: "John Doe",
+        team: "Innovit official team",
+        email_id: formData.email,
+        certificate_hash_id: "OFFICIAL-" + Math.random().toString(36).substr(2, 9).toUpperCase(),
+        role: officialRole
+      };
+
+      const roleDisplay = officialRole.toUpperCase().replace('_', ' ');
+      const dummyTheme = { id: roleDisplay, name: "INNOVIT 2026 OFFICIAL" };
+
+      setUserData(dummyData);
+      setVerifiedTheme(dummyTheme);
+
+      // Generate PDF Preview
+      await updatePdfPreview(dummyData, dummyTheme);
+
+      setIsVerifying(false);
+      toast.success(`Verified! Your ${officialRole.replace('_', ' ')} certificate is ready.`);
+    }, 1500);
   };
 
 
@@ -715,133 +556,236 @@ const Certificate = () => {
             <div className="glass-strong p-8 rounded-3xl border border-yellow-500/10 bg-[#111]/80 backdrop-blur-2xl shadow-2xl relative overflow-hidden group">
               <div className="absolute w-24 h-24 transition-all rounded-full -top-12 -right-12 bg-yellow-500/10 blur-2xl group-hover:bg-yellow-500/20" />
 
-              <h2 className="flex items-center gap-3 mb-8 text-2xl font-bold text-white">
-                <ShieldCheck className="w-6 h-6 text-yellow-500" />
-                User Verification
-              </h2>
-
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-[#fff1ce] font-semibold mb-3 text-sm uppercase tracking-wider">
-                    Email Address
-                  </label>
-                  <div className="relative">
-                    <Mail className="absolute w-5 h-5 -translate-y-1/2 left-4 top-1/2 text-yellow-400/50" />
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      placeholder="Enter registered email"
-                      className="w-full pl-12 pr-4 py-4 bg-[#0a0a0f]/80 border border-yellow-500/20 rounded-2xl text-white placeholder-gray-600 focus:outline-none focus:border-yellow-400 focus:ring-4 focus:ring-yellow-400/10 transition-all font-medium"
-                    />
-                  </div>
-                  <p className="mt-2 ml-1 text-xs text-gray-500">Use the email you used during registration.</p>
-                </div>
-
-                {!userData && (
-                  <>
-                    <div>
-                      <label className="block text-[#fff1ce] font-semibold mb-3 text-sm uppercase tracking-wider">
-                        Full Name
-                      </label>
-                      <div className="relative">
-                        <User className="absolute w-5 h-5 -translate-y-1/2 left-4 top-1/2 text-yellow-400/50" />
-                        <input
-                          type="text"
-                          name="name"
-                          value={formData.name}
-                          onChange={handleInputChange}
-                          placeholder="Enter your name"
-                          className="w-full pl-12 pr-4 py-4 bg-[#0a0a0f]/80 border border-yellow-500/20 rounded-2xl text-white placeholder-gray-600 focus:outline-none focus:border-yellow-400 focus:ring-4 focus:ring-yellow-400/10 transition-all font-medium"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-[#fff1ce] font-semibold mb-3 text-sm uppercase tracking-wider">
-                        Team Name
-                      </label>
-                      <div className="relative">
-                        <Award className="absolute w-5 h-5 -translate-y-1/2 left-4 top-1/2 text-yellow-400/50" />
-                        <input
-                          type="text"
-                          name="team"
-                          value={formData.team}
-                          onChange={handleInputChange}
-                          placeholder="Enter team name"
-                          className="w-full pl-12 pr-4 py-4 bg-[#0a0a0f]/80 border border-yellow-500/20 rounded-2xl text-white placeholder-gray-600 focus:outline-none focus:border-yellow-400 focus:ring-4 focus:ring-yellow-400/10 transition-all font-medium"
-                        />
-                      </div>
-                    </div>
-                  </>
-                )}
-
-                {userData && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    className="space-y-4"
+              {/* Tabs */}
+              <div className="flex p-1 mb-8 space-x-1 rounded-xl bg-blue-900/20 glass-strong">
+                {['phase1', 'phase2', 'officials'].map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => {
+                      setActiveTab(tab);
+                      setUserData(null);
+                      setVerifiedTheme(null);
+                      setPdfPreviewUrl(null);
+                      setFormData({ email: '', name: '', team: '' });
+                    }}
+                    className={`
+                          w-full py-2.5 text-sm font-medium leading-5 rounded-lg
+                          focus:outline-none focus:ring-2 ring-offset-2 ring-offset-blue-400 ring-white ring-opacity-60
+                          ${activeTab === tab
+                        ? 'bg-white shadow text-blue-700'
+                        : 'text-blue-100 hover:bg-white/[0.12] hover:text-white'
+                      }
+                        `}
                   >
-                    <div>
-                      <label className="block text-[#fff1ce] font-semibold mb-3 text-sm uppercase tracking-wider">
-                        Full Name
-                      </label>
-                      <div className="relative">
-                        <User className="absolute w-5 h-5 -translate-y-1/2 left-4 top-1/2 text-yellow-400/50" />
-                        <input
-                          type="text"
-                          value={formData.name}
-                          readOnly
-                          className="w-full pl-12 pr-4 py-4 bg-[#0a0a0f]/40 border border-yellow-500/10 rounded-2xl text-gray-400 cursor-not-allowed font-medium"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-[#fff1ce] font-semibold mb-3 text-sm uppercase tracking-wider">
-                        Team Name
-                      </label>
-                      <div className="relative">
-                        <Award className="absolute w-5 h-5 -translate-y-1/2 left-4 top-1/2 text-yellow-400/50" />
-                        <input
-                          type="text"
-                          value={formData.team}
-                          readOnly
-                          className="w-full pl-12 pr-4 py-4 bg-[#0a0a0f]/40 border border-yellow-500/10 rounded-2xl text-gray-400 cursor-not-allowed font-medium"
-                        />
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-
-                <motion.button
-                  whileHover={{ scale: 1.02, translateY: -2 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={handleVerifyUser}
-                  disabled={!formData.email || isVerifying}
-                  className={`
-                    w-full py-4 rounded-2xl font-black text-lg
-                    transition-all duration-300 flex items-center justify-center gap-3 shadow-xl
-                    ${formData.email && !isVerifying
-                      ? 'bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 text-[#0a0a0f] hover:shadow-yellow-500/30'
-                      : 'bg-gray-800 text-gray-400 cursor-not-allowed opacity-50'
-                    }
-                  `}
-                >
-                  {isVerifying ? (
-                    <>
-                      <Loader2 className="w-6 h-6 animate-spin" />
-                      <span>Verifying...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Search className="w-6 h-6" />
-                      <span>{userData ? 'Re-verify' : 'Verify & Preview'}</span>
-                    </>
-                  )}
-                </motion.button>
+                    {tab === 'phase1' ? 'Phase 1' : tab === 'phase2' ? 'Phase 2' : 'Officials'}
+                  </button>
+                ))}
               </div>
+
+              {activeTab === 'phase1' && (
+                <>
+                  <h2 className="flex items-center gap-3 mb-8 text-2xl font-bold text-white">
+                    <ShieldCheck className="w-6 h-6 text-yellow-500" />
+                    Participant Verification
+                  </h2>
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-[#fff1ce] font-semibold mb-3 text-sm uppercase tracking-wider">
+                        Email Address
+                      </label>
+                      <div className="relative">
+                        <Mail className="absolute w-5 h-5 -translate-y-1/2 left-4 top-1/2 text-yellow-400/50" />
+                        <input
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          placeholder="Enter registered email"
+                          className="w-full pl-12 pr-4 py-4 bg-[#0a0a0f]/80 border border-yellow-500/20 rounded-2xl text-white placeholder-gray-600 focus:outline-none focus:border-yellow-400 focus:ring-4 focus:ring-yellow-400/10 transition-all font-medium"
+                        />
+                      </div>
+                      <p className="mt-2 ml-1 text-xs text-gray-500">Use the email you used during registration.</p>
+                    </div>
+
+                    {!userData && (
+                      <>
+                        <div>
+                          <label className="block text-[#fff1ce] font-semibold mb-3 text-sm uppercase tracking-wider">
+                            Full Name
+                          </label>
+                          <div className="relative">
+                            <User className="absolute w-5 h-5 -translate-y-1/2 left-4 top-1/2 text-yellow-400/50" />
+                            <input
+                              type="text"
+                              name="name"
+                              value={formData.name}
+                              onChange={handleInputChange}
+                              placeholder="Enter your name"
+                              className="w-full pl-12 pr-4 py-4 bg-[#0a0a0f]/80 border border-yellow-500/20 rounded-2xl text-white placeholder-gray-600 focus:outline-none focus:border-yellow-400 focus:ring-4 focus:ring-yellow-400/10 transition-all font-medium"
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-[#fff1ce] font-semibold mb-3 text-sm uppercase tracking-wider">
+                            Team Name
+                          </label>
+                          <div className="relative">
+                            <Award className="absolute w-5 h-5 -translate-y-1/2 left-4 top-1/2 text-yellow-400/50" />
+                            <input
+                              type="text"
+                              name="team"
+                              value={formData.team}
+                              onChange={handleInputChange}
+                              placeholder="Enter team name"
+                              className="w-full pl-12 pr-4 py-4 bg-[#0a0a0f]/80 border border-yellow-500/20 rounded-2xl text-white placeholder-gray-600 focus:outline-none focus:border-yellow-400 focus:ring-4 focus:ring-yellow-400/10 transition-all font-medium"
+                            />
+                          </div>
+                        </div>
+                      </>
+                    )}
+
+                    {userData && (
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-[#fff1ce] font-semibold mb-3 text-sm uppercase tracking-wider">
+                            Full Name
+                          </label>
+                          <div className="relative">
+                            <User className="absolute w-5 h-5 -translate-y-1/2 left-4 top-1/2 text-yellow-400/50" />
+                            <input
+                              type="text"
+                              value={formData.name}
+                              readOnly
+                              className="w-full pl-12 pr-4 py-4 bg-[#0a0a0f]/40 border border-yellow-500/10 rounded-2xl text-gray-400 cursor-not-allowed font-medium"
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-[#fff1ce] font-semibold mb-3 text-sm uppercase tracking-wider">
+                            Team Name
+                          </label>
+                          <div className="relative">
+                            <Award className="absolute w-5 h-5 -translate-y-1/2 left-4 top-1/2 text-yellow-400/50" />
+                            <input
+                              type="text"
+                              value={formData.team}
+                              readOnly
+                              className="w-full pl-12 pr-4 py-4 bg-[#0a0a0f]/40 border border-yellow-500/10 rounded-2xl text-gray-400 cursor-not-allowed font-medium"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    <motion.button
+                      whileHover={{ scale: 1.02, translateY: -2 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={handleVerifyUser}
+                      disabled={!formData.email || isVerifying}
+                      className={`
+                          w-full py-4 rounded-2xl font-black text-lg
+                          transition-all duration-300 flex items-center justify-center gap-3 shadow-xl
+                          ${formData.email && !isVerifying
+                          ? 'bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 text-[#0a0a0f] hover:shadow-yellow-500/30'
+                          : 'bg-gray-800 text-gray-400 cursor-not-allowed opacity-50'
+                        }
+                          `}
+                    >
+                      {isVerifying ? (
+                        <>
+                          <Loader2 className="w-6 h-6 animate-spin" />
+                          <span>Verifying...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Search className="w-6 h-6" />
+                          <span>{userData ? 'Re-verify' : 'Verify & Preview'}</span>
+                        </>
+                      )}
+                    </motion.button>
+                  </div>
+                </>
+              )}
+
+              {activeTab === 'phase2' && (
+                <div className="flex flex-col items-center justify-center p-12 text-center">
+                  <div className="p-4 mb-4 rounded-full bg-yellow-500/10">
+                    <Loader2 className="w-8 h-8 text-yellow-500 animate-spin" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white">Coming Soon</h3>
+                  <p className="mt-2 text-gray-400">Phase 2 certificates will be available shortly.</p>
+                </div>
+              )}
+
+              {activeTab === 'officials' && (
+                <>
+                  <h2 className="flex items-center gap-3 mb-8 text-2xl font-bold text-white">
+                    <ShieldCheck className="w-6 h-6 text-yellow-500" />
+                    Official Verification
+                  </h2>
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-[#fff1ce] font-semibold mb-3 text-sm uppercase tracking-wider">
+                        Select Role
+                      </label>
+                      <select
+                        value={officialRole}
+                        onChange={(e) => setOfficialRole(e.target.value)}
+                        className="w-full px-4 py-4 bg-[#0a0a0f]/80 border border-yellow-500/20 rounded-2xl text-white focus:outline-none focus:border-yellow-400 focus:ring-4 focus:ring-yellow-400/10 transition-all font-medium appearance-none"
+                      >
+                        <option value="mentor">Mentor</option>
+                        <option value="judge">Judge</option>
+                        <option value="volunteer">Volunteer</option>
+                        <option value="student_coordinator">Student Coordinator</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-[#fff1ce] font-semibold mb-3 text-sm uppercase tracking-wider">
+                        Email Address
+                      </label>
+                      <div className="relative">
+                        <Mail className="absolute w-5 h-5 -translate-y-1/2 left-4 top-1/2 text-yellow-400/50" />
+                        <input
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          placeholder="Enter official email"
+                          className="w-full pl-12 pr-4 py-4 bg-[#0a0a0f]/80 border border-yellow-500/20 rounded-2xl text-white placeholder-gray-600 focus:outline-none focus:border-yellow-400 focus:ring-4 focus:ring-yellow-400/10 transition-all font-medium"
+                        />
+                      </div>
+                    </div>
+
+                    <motion.button
+                      whileHover={{ scale: 1.02, translateY: -2 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={handleVerifyOfficial}
+                      disabled={!formData.email || isVerifying}
+                      className={`
+                          w-full py-4 rounded-2xl font-black text-lg
+                          transition-all duration-300 flex items-center justify-center gap-3 shadow-xl
+                          ${formData.email && !isVerifying
+                          ? 'bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 text-[#0a0a0f] hover:shadow-yellow-500/30'
+                          : 'bg-gray-800 text-gray-400 cursor-not-allowed opacity-50'
+                        }
+                          `}
+                    >
+                      {isVerifying ? (
+                        <>
+                          <Loader2 className="w-6 h-6 animate-spin" />
+                          <span>Verifying...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Search className="w-6 h-6" />
+                          <span>{userData ? 'Re-verify' : 'Verify & Preview'}</span>
+                        </>
+                      )}
+                    </motion.button>
+                  </div>
+                </>
+              )}
             </div>
 
             <div className="p-6 border glass-strong rounded-3xl border-blue-500/10 bg-blue-500/5">
@@ -1030,25 +974,25 @@ const Certificate = () => {
                   </motion.div>
                 )}
               </AnimatePresence>
-
             </div>
           </motion.div>
         </div>
+
+        {/* Floating Verification Icon - Bottom Right */}
+        <motion.button
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => navigate('/verify-certificate')}
+          className="fixed bottom-8 right-8 z-50 flex items-center gap-3 px-6 py-3 rounded-full bg-[#111]/90 border border-yellow-500/30 text-yellow-500 shadow-2xl shadow-yellow-500/10 backdrop-blur-xl hover:border-yellow-500/60 hover:bg-[#111] transition-all group"
+        >
+          <span className="text-sm font-bold tracking-wide uppercase">Verify Certificate</span>
+          <div className="p-2 transition-colors border rounded-full bg-yellow-500/10 border-yellow-500/20 group-hover:bg-yellow-500/20">
+            <ShieldCheck className="w-5 h-5" />
+          </div>
+        </motion.button>
       </div>
-      {/* Floating Verification Icon - Bottom Right */}
-      <motion.button
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => navigate('/verify-certificate')}
-        className="fixed bottom-8 right-8 z-50 flex items-center gap-3 px-6 py-3 rounded-full bg-[#111]/90 border border-yellow-500/30 text-yellow-500 shadow-2xl shadow-yellow-500/10 backdrop-blur-xl hover:border-yellow-500/60 hover:bg-[#111] transition-all group"
-      >
-        <span className="text-sm font-bold tracking-wide uppercase">Verify Certificate</span>
-        <div className="p-2 transition-colors border rounded-full bg-yellow-500/10 border-yellow-500/20 group-hover:bg-yellow-500/20">
-          <ShieldCheck className="w-5 h-5" />
-        </div>
-      </motion.button>
     </div>
   );
 };
